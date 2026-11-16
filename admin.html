@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin — BHARATH EDITZ</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{padding:80px 5vw 40px}
+.o{background:var(--card);border:1px solid #ffffff18;border-radius:16px;padding:18px;margin-bottom:16px;display:grid;gap:10px}
+.o h3{color:var(--n)}.o small{opacity:.7}
+.o a{color:var(--p);text-decoration:underline;margin-right:10px;word-break:break-all}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#app{max-width:900px;margin:auto}
+</style>
+</head>
+<body>
+<header class="nav"><a class="logo" href="index.html">BHARATH <span>EDITZ</span> ADMIN</a><button class="btn sm" id="out" hidden>Logout</button></header>
+<div id="app">
+  <form id="login" class="form">
+    <h2>Admin <span>Login</span></h2>
+    <input id="em" type="email" placeholder="Admin email" required>
+    <input id="pw" type="password" placeholder="Password" required>
+    <p class="err" id="lerr"></p>
+    <button class="btn">LOGIN</button>
+  </form>
+  <div id="list" hidden></div>
+</div>
+<script type="module">
+import { CFG } from "./script.js";
+const B = "https://www.gstatic.com/firebasejs/10.12.2/";
+const $ = s => document.querySelector(s);
+if (!CFG.firebase.apiKey) { $("#login").innerHTML = "<p class='err'>Add your Firebase config in script.js first.</p>"; throw 0; }
+const [app, au, fs, st] = await Promise.all(["app","auth","firestore","storage"].map(m=>import(`${B}firebase-${m}.js`)));
+const a = app.initializeApp(CFG.firebase), auth = au.getAuth(a), db = fs.getFirestore(a), storage = st.getStorage(a);
+const STATUS = ["Order Received","Files Received","Editing in Progress","Quality Checking","Completed","Delivered"];
+const PAY = ["Pending","Paid","Partially Paid","Cash"];
+const opt = (arr,v) => arr.map(x=>`<option ${x===v?"selected":""}>${x}</option>`).join("");
+
+$("#login").onsubmit = async e => { e.preventDefault();
+  try { await au.signInWithEmailAndPassword(auth, $("#em").value, $("#pw").value); }
+  catch { $("#lerr").textContent = "Login failed."; } };
+$("#out").onclick = () => au.signOut(auth);
+
+let unsub;
+au.onAuthStateChanged(auth, u => {
+  $("#login").hidden = !!u; $("#list").hidden = !u; $("#out").hidden = !u;
+  unsub && unsub();
+  if (!u) return;
+  unsub = fs.onSnapshot(fs.query(fs.collection(db,"orders"), fs.orderBy("created","desc")), snap => {
+    $("#list").innerHTML = "<h2>All <span>Orders</span></h2>" + snap.docs.map(d => { const o = d.data(); return `
+    <div class="o" id="${o.id}">
+      <h3>${o.id} — ${o.service}</h3>
+      <small>${o.name} • ${o.email} • <a href="https://wa.me/${o.whatsapp.replace(/\D/g,"")}" target="_blank">WhatsApp ${o.whatsapp}</a><br>
+      ${o.duration} • ${o.pack} • Deliver by: ${o.deliveryDate||"—"} • ${new Date(o.created).toLocaleString()}</small>
+      <p><b>Requirements:</b> ${o.req}</p><p><b>Extra:</b> ${o.extra||"—"}</p>
+      <div class="files" data-p='${JSON.stringify(o.files.map(f=>f.path))}'><button class="btn sm gf">Get file links (${o.files.length})</button></div>
+      <div class="two">
+        <select class="s">${opt(STATUS,o.status)}</select>
+        <select class="p">${opt(PAY,o.payment)}</select>
+        <input class="c" type="number" placeholder="Editing charges ₹" value="${o.charges||""}">
+        <input class="m" placeholder="Delivery message" value="${o.deliveryMsg||""}">
+      </div>
+      <button class="btn sm sv">Save changes</button>
+      <label>Upload final edited video<input type="file" class="fv" accept="video/*"></label>
+      <progress class="pg" value="0" max="100" hidden></progress>
+      ${o.finalUrl?`<small>✅ Final video uploaded</small>`:""}
+    </div>`}).join("");
+  });
+});
+
+$("#list").addEventListener("click", async e => {
+  const box = e.target.closest(".o"); if (!box) return; const id = box.id;
+  if (e.target.classList.contains("gf")) {
+    const paths = JSON.parse(box.querySelector(".files").dataset.p);
+    const urls = await Promise.all(paths.map(p=>st.getDownloadURL(st.ref(storage,p))));
+    box.querySelector(".files").innerHTML = urls.map((u,i)=>`<a href="${u}" target="_blank" download>File ${i+1}</a>`).join("");
+  }
+  if (e.target.classList.contains("sv")) {
+    await fs.updateDoc(fs.doc(db,"orders",id), { status: box.querySelector(".s").value, payment: box.querySelector(".p").value,
+      charges: +box.querySelector(".c").value||0, deliveryMsg: box.querySelector(".m").value });
+    e.target.textContent = "Saved ✔";
+  }
+});
+$("#list").addEventListener("change", e => {
+  if (!e.target.classList.contains("fv")) return;
+  const box = e.target.closest(".o"), file = e.target.files[0], pg = box.querySelector(".pg"); if (!file) return;
+  pg.hidden = false;
+  const task = st.uploadBytesResumable(st.ref(storage,`final/${box.id}/${file.name}`), file);
+  task.on("state_changed", s=>pg.value=s.bytesTransferred/s.totalBytes*100, ()=>alert("Upload failed"), async () => {
+    const url = await st.getDownloadURL(task.snapshot.ref);
+    await fs.updateDoc(fs.doc(db,"orders",box.id), { finalUrl:url, status:"Delivered" });
+  });
+});
+</script>
+</body>
+</html>

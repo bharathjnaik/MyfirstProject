@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BHARATH EDITZ — Professional Video Editing Services</title>
+<meta name="description" content="BHARATH EDITZ: YouTube, Reels, wedding, cinematic and promo video editing. Upload your clips, place an order, download your finished video.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <a class="logo" href="#home">BHARATH <span>EDITZ</span></a>
+  <button class="burger" onclick="document.body.classList.toggle('open')">☰</button>
+  <nav onclick="document.body.classList.remove('open')">
+    <a href="#services">Services</a><a href="#why">Why Us</a><a href="#reviews">Reviews</a>
+    <a href="#track">Track Order</a><a href="#contact">Contact</a>
+    <a class="btn sm" href="#order">Order Now</a>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <div class="wm">BHARATH<br>EDITZ</div>
+  <img class="hero-img" src="images/hero.jpg" alt="Bharath, video editor">
+  <div class="hero-txt">
+    <h1>YOUR VISION,<br>OUR EDITING.</h1>
+    <p>Professional Video Editing Services – Bring Your Memories to Life.</p>
+    <div class="row"><a class="btn" href="#order">ORDER NOW</a><a class="btn ghost" href="#services">EXPLORE SERVICES</a></div>
+  </div>
+</section>
+
+<section id="services" class="sec">
+  <h2>Editing <span>Services</span></h2>
+  <div class="grid" id="cards"></div>
+</section>
+
+<section id="why" class="sec alt">
+  <div class="about">
+    <img src="images/editor.jpg" alt="Editor Bharath" loading="lazy">
+    <div>
+      <h2>Why Choose <span>Us</span></h2>
+      <ul class="ticks">
+        <li>🎬 Studio-quality edits, colour grading &amp; sound sync</li>
+        <li>⚡ Fast delivery – your date, our deadline</li>
+        <li>🔒 Your files stay private and secure</li>
+        <li>♻️ Free revisions until you love it</li>
+        <li>📱 Order from phone or computer, download in HD</li>
+      </ul>
+      <p class="flow">Select service → Upload clips → Place order → We edit → Download your video</p>
+    </div>
+  </div>
+</section>
+
+<section id="reviews" class="sec">
+  <h2>Happy <span>Customers</span></h2>
+  <div class="grid three">
+    <blockquote>“My wedding reel gave everyone goosebumps. Delivered before the date!” <b>— Priya S.</b></blockquote>
+    <blockquote>“Clean cuts, perfect beat sync. My Shorts views doubled.” <b>— Arjun K.</b></blockquote>
+    <blockquote>“Professional ad for my shop. Great value, great communication.” <b>— Fathima R.</b></blockquote>
+  </div>
+</section>
+
+<section id="order" class="sec alt">
+  <h2>Place Your <span>Order</span></h2>
+  <form id="orderForm" class="form" novalidate>
+    <input name="name" placeholder="Customer Name *" required>
+    <input name="email" type="email" placeholder="Email Address *" required>
+    <input name="whatsapp" type="tel" placeholder="WhatsApp Number *" required>
+    <select name="service" id="svcSel" required><option value="">Select Editing Service *</option></select>
+    <select name="duration" required><option value="">Video Duration *</option><option>Up to 30 sec</option><option>30 sec – 1 min</option><option>1 – 3 min</option><option>3 – 10 min</option><option>10+ min</option></select>
+    <select name="pack" required><option value="">Package *</option><option>Basic</option><option>Standard</option><option>Premium</option></select>
+    <label>Upload Photos &amp; Videos *<input type="file" name="files" id="files" multiple accept="image/*,video/*"></label>
+    <label>Reference Video (optional)<input type="file" id="ref" accept="video/*"></label>
+    <textarea name="req" rows="4" placeholder="Describe your editing requirements *" required></textarea>
+    <label>Preferred Delivery Date<input type="date" name="date"></label>
+    <textarea name="extra" rows="2" placeholder="Additional instructions"></textarea>
+    <progress id="prog" value="0" max="100" hidden></progress>
+    <p id="err" class="err"></p>
+    <button class="btn" type="submit">SUBMIT ORDER</button>
+  </form>
+  <div id="done" class="done" hidden></div>
+</section>
+
+<section id="track" class="sec">
+  <h2>Track Your <span>Order</span></h2>
+  <div class="form">
+    <input id="tid" placeholder="Enter Order ID (e.g. BE1A2B3C)">
+    <button class="btn" id="tbtn">CHECK STATUS</button>
+    <div id="tres" class="done" hidden></div>
+  </div>
+</section>
+
+<section id="contact" class="sec alt">
+  <h2>Contact <span>Us</span></h2>
+  <div class="row center">
+    <a class="btn" id="wa" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="btn ghost" id="mail">Email</a>
+    <a class="btn ghost" id="ig" target="_blank" rel="noopener">Instagram</a>
+    <a class="btn ghost" id="yt" target="_blank" rel="noopener">YouTube</a>
+  </div>
+  <p class="pay">Payments: UPI • Google Pay • PhonePe • QR Code • Cash (confirmed manually by admin)</p>
+</section>
+<footer>© 2026 BHARATH EDITZ. All rights reserved.</footer>
+<script type="module" src="script.js"></script>
+</body>
+</html>
