@@ -1,2 +1,2 @@
-# BharathEditzwebsite
-My First Project Creating My own webiste
+# BharathEditz
+"My First Project Creating My own webiste"
