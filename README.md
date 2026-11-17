@@ -16,8 +16,6 @@ This website is designed to provide customers with an easy platform to order pro
 
 💻 Project: BHARATH EDITZ
 
-🌐 Live Website: https://bharathjnaik.github.io/BharathEditzwebsite/
-
 This is my first step into website development, and I'm excited to keep learning, building, and improving my coding skills.
 
 "Every expert was once a beginner. Every big achievement starts with a small step."
